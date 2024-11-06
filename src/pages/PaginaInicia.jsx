@@ -2,9 +2,10 @@ import { useState } from "react";
 import useLivros from "../service/useLivros";
 
 function PaginaInicial() {
-	const [consulta, setConsultas] = useState("");
-	const { livros, encontrados, carregamento } = useLivros(consulta);
+	const [consulta, setConsultas] = useState("J.R.R Tolkien");
+	const {livros ,encontrados, carregamento} = useLivros(consulta);
 
+	console.log(livros);
 	return (
 		<div>
 			<h1>Lista de Livros</h1>
@@ -23,12 +24,15 @@ function PaginaInicial() {
 						<ul>
 							{livros.map((livro, index) => (
 								<li key={index}>
-									<h2>{livro.volumeInfo.title}</h2>
-									<p>{livro.volumeInfo.authors ? livro.volumeInfo.authors.join(", ") : "Autor desconhecido"}</p>
-									<p>{livro.volumeInfo.description || "Sem descrição"}</p>
-									{livro.volumeInfo.imageLinks && (
-										<img src={livro.volumeInfo.imageLinks.thumbnail} alt={livro.volumeInfo.title} />
+									<h2>{livro.titulo}</h2>
+									<p>{livro.autor ? livro.autor.join(", ") : "Autor desconhecido"}</p>
+									<p>{livro.descricao || "Sem descrição"}</p>
+									{livro.imagem && (
+										<img src={livro.imagem.thumbnail} alt={livro.titulo} />
 									)}
+									<p>Gênero: {livro.genero}</p>
+									<p>Média de avalição do livro: {livro.avaliacao}
+									</p>
 								</li>
 							))}
 						</ul>
