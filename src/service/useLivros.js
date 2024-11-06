@@ -61,9 +61,9 @@ function useLivros(consulta) {
 							titulo: item.volumeInfo.title,
 							autor: item.volumeInfo.authors,
 							descricao: item.volumeInfo.description,
-							genero: item.volumeInfo.categories,
+							genero: item.volumeInfo.categories || "Indefinido",
 							imagem: item.volumeInfo.imageLinks,
-							avalicao: dadoEspecifico.volumeInfo.averageRating || 0
+							media: dadoEspecifico.volumeInfo.averageRating || "Não possui avaliação"
 						};
 
 					});

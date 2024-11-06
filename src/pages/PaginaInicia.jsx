@@ -31,7 +31,7 @@ function PaginaInicial() {
 										<img src={livro.imagem.thumbnail} alt={livro.titulo} />
 									)}
 									<p>Gênero: {livro.genero}</p>
-									<p>Média de avalição do livro: {livro.avaliacao}
+									<p>Média de avalição do livro: {livro.media}
 									</p>
 								</li>
 							))}
