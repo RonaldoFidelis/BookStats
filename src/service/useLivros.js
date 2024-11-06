@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 
 function useLivros(consulta) {
 	const [livros, setLivros] = useState([]);
+	const [encontrados, setEncontrados] = useState(0);
 	const [carregamento, setCarregamento] = useState(false);
 	const [erro, setErro] = useState(null);
 
@@ -20,6 +21,7 @@ function useLivros(consulta) {
 			try {
 				const response = await fetch(url);
 				const data = await response.json();
+				setEncontrados(data.totalItems)
 				setLivros(data.items || []);
 			} catch (e) {
 				setErro(e);
@@ -34,7 +36,7 @@ function useLivros(consulta) {
 
 	}, [consulta]);
 
-	return { livros, carregamento, erro};
+	return { livros, encontrados, carregamento, erro};
 
 }
 
