@@ -16,7 +16,8 @@ import { useState, useEffect } from "react"
 function useLivros(consulta) {
 	const [livros, setLivros] = useState([]); // Livros encontrandos
 	const [encontrados, setEncontrados] = useState(0); // Qtd. de livros encontrados
-	const [carregamento, setCarregamento] = useState(false); // Gerenciar se o estado de carregamento está ativo ou não, permitindo implementar alguma funcionalidade durante a pesquisa
+	const [carregamento, setCarregamento] = useState(false); // Estado de carregamento
+	const [ultimaConsulta, setUltimaConsulta] = useState(""); // Guarda ultima consulta
 	const [erro, setErro] = useState(null); // Captura o erro
 
 	/**
@@ -28,28 +29,29 @@ function useLivros(consulta) {
 	 * inputs recentes conforme o usuário interage com a pesquisa.
 	 */
 	useEffect(() => {
-		if (!consulta) return;
+		if (consulta === "" || consulta === ultimaConsulta) return;
 
 		const fetchLivros = async () => {
 			setCarregamento(true);
 			setErro(null);
 
 			const chaveApi = import.meta.env.VITE_REACT_APP_API_KEY;
-			const urlGenerico = `https://www.googleapis.com/books/v1/volumes?q=${consulta}+inauthor&key=${chaveApi}`;
+			const urlGenerico = `https://www.googleapis.com/books/v1/volumes?q=${consulta}+inauthor&key=${chaveApi}&maxResults=10`;
 
 			try {
 				const respostaGenerico = await fetch(urlGenerico);
 				const dadoGenerico = await respostaGenerico.json();
 
+				/** Segundo a documentação da própria API, cada objeto JSON possui
+				* um atributo chamado 'selfLink'. As informações sobre a média de avaliação
+				* do livro estão disponíveis apenas no 'selfLink' do objeto específico.
+				* A ideia é criar uma segunda interação usando uma promise para capturar
+				* os dados específicos de cada objeto.
+				*/
+
 				if (dadoGenerico.items && dadoGenerico.items.length > 0) {
 					setEncontrados(dadoGenerico.totalItems);
 
-					/** Segundo a documentação da própria API, cada objeto JSON possui
- 					* um atributo chamado 'selfLink'. As informações sobre a média de avaliação
- 					* do livro estão disponíveis apenas no 'selfLink' do objeto específico.
- 					* A ideia é criar uma segunda interação usando uma promise para capturar
- 					* os dados específicos de cada objeto.
- 					*/
 					const promessas = dadoGenerico.items.map(async (item) => {
 						const urlLivroEspecifico = item.selfLink;
 						const respostaEspecifica = await fetch(urlLivroEspecifico);
@@ -70,21 +72,20 @@ function useLivros(consulta) {
 
 					// Aguarda todas as requisições e armazena os dados
 					const livrosComDetalhes = await Promise.all(promessas);
-
 					setLivros(livrosComDetalhes);
 				} else {
 					setLivros([]);
 				}
-			} catch (e) {
-				setErro(e);
-				console.error(e);
+			} catch (erro) {
+				console.error(erro);
 			} finally {
 				setCarregamento(false);
 			}
 		};
 
 		fetchLivros();
-	}, [consulta]);
+		setUltimaConsulta(consulta);
+	}, [consulta, ultimaConsulta]);
 
 	return { livros, encontrados, carregamento, erro };
 

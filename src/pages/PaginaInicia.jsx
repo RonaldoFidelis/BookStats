@@ -2,20 +2,31 @@ import { useState } from "react";
 import useLivros from "../service/useLivros";
 
 function PaginaInicial() {
-	const [consulta, setConsultas] = useState("J.R.R Tolkien");
-	const {livros ,encontrados, carregamento} = useLivros(consulta);
+	const [input, setInput] = useState("");
+	const [consulta, setConsulta] = useState("");
+	const {livros, carregamento} = useLivros(consulta);
 
-	console.log(livros);
+	const handleInput = (event) => {
+		setInput(event.target.value);
+	};
+
+	const handleQuery = () => {
+		setConsulta(input);
+		setInput("");
+	};
+
 	return (
 		<div>
 			<h1>Lista de Livros</h1>
-			<p>Total de livros: {encontrados}</p>
 			<input
 				type="text"
-				value={consulta}
-				onChange={(e) => setConsultas(e.target.value)}
-				placeholder="Pesquise por livros"
+				value={input}
+				onChange={handleInput}
+				placeholder="Pesquisar"
 			/>
+			<button onClick={handleQuery} disabled={carregamento}>
+				{carregamento ? "Carregando":"Buscar"}
+			</button>
 			{carregamento ? (
 				<p>Carregando...</p>
 			) : (
@@ -31,8 +42,7 @@ function PaginaInicial() {
 										<img src={livro.imagem.thumbnail} alt={livro.titulo} />
 									)}
 									<p>Gênero: {livro.genero}</p>
-									<p>Média de avalição do livro: {livro.media}
-									</p>
+									<p>Média de avaliação do livro: {livro.media}</p>
 								</li>
 							))}
 						</ul>
