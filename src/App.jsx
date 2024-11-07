@@ -1,9 +1,17 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import PaginaInicial from "./pages/PaginaInicial";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
 
   return (
     <div>
-      <h1>Hello world</h1>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={ <PaginaInicial/> } />
+					<Route path="/dashboard" element={ <Dashboard/> } />
+				</Routes>
+			</BrowserRouter>
     </div>
   )
 }
