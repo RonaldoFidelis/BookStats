@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Api from "../service/Api";
+import BotaoAtivo from "../components/BotaoAtivo";
+import BotaoDesativo from "../components/BotaoDisativado";
 
 const PaginaInicial = () => {
   const { getLivros } = Api();
   const [inputPesquisa, setInputPesquisa] = useState("");
-  const { data, isLoading, isError, error , isFetching, refetch } = useQuery('livros', () => getLivros(inputPesquisa), {
+  // eslint-disable-next-line no-unused-vars
+  const { data, isLoading, isError, error, isFetching, refetch } = useQuery('livros', () => getLivros(inputPesquisa), {
     enabled: false,
   });
 
@@ -18,13 +21,6 @@ const PaginaInicial = () => {
     refetch();
   };
 
-  if(isLoading || isFetching) {
-    return <p>Carregando...</p>
-  }
-  if(isError) {
-    return <p>{error.mensage}</p>
-  }
-
   return (
     <div>
       <h1>Lista de Livros</h1>
@@ -36,9 +32,12 @@ const PaginaInicial = () => {
         placeholder="Pesquisar por livros"
       />
 
-      <button onClick={handlePesquisa} disabled={isLoading}>
-        {isLoading ? "Carregando..." : "Pesquisar"}
-      </button>
+      {(isLoading || isFetching) ? (
+        <BotaoDesativo text={"Carregando"} />
+      ) : (
+        <BotaoAtivo onClick={handlePesquisa} text={"Buscar"} />
+      )}
+
 
       {/* Exibindo resultados */}
       {data && (
