@@ -7,7 +7,7 @@ const chaveApi = import.meta.env.VITE_REACT_APP_API_KEY;
  *
  */
 const Api = () => {
-
+  
   /** getLivros - Realiza uma busca de dados genéricos de livros.
   *
   * Este método recebe um parâmetro de consulta (que pode ser o título do livro ou o
